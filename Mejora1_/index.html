@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración y Visualización MQTT</title>
+    <!-- Enlace a Bootstrap CDN para estilos -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.0.0/mqtt.min.js"></script>
+</head>
+
+<body class="container mt-5">
+    <h1 class="text-center mb-4">Visualizador MQTT</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <form id="mqttConfigForm">
+                <div class="form-group">
+                    <label for="mqttBroker">Broker:</label>
+                    <input type="text" id="mqttBroker" class="form-control" name="mqttBroker" value="3fb2c2fed242415d88ab467b8ad1f686.s1.eu.hivemq.cloud">
+                </div>
+
+                <div class="form-group">
+                    <label for="mqttPort">Puerto:</label>
+                    <input type="text" id="mqttPort" class="form-control" name="mqttPort" value="8884">
+                </div>
+
+                <div class="form-group">
+                    <label for="mqttUsername">Nombre de Usuario:</label>
+                    <input type="text" id="mqttUsername" class="form-control" name="mqttUsername" value="Colmenas">
+                </div>
+
+                <div class="form-group">
+                    <label for="mqttPassword">Contraseña:</label>
+                    <input type="password" id="mqttPassword" class="form-control" name="mqttPassword" value="123456789Ab">
+                </div>
+
+                <div class="form-group">
+                    <label for="mqttTopic">Tópico:</label>
+                    <input type="text" id="mqttTopic" class="form-control" name="mqttTopic" value="1117508100/7448C055B594/Datos">
+                </div>
+
+                <div class="form-group">
+                    <label for="mqttMessage">Mensaje:</label>
+                    <input type="text" id="mqttMessage" class="form-control" name="mqttMessage" value="{'Temperatura': 30, 'Humedad': 200, 'Peso': 150}">
+                </div>
+
+                <button type="button" onclick="conectarAlBroker()" class="btn btn-success">Conectar al Broker</button>
+                <button type="button" onclick="enviarTópico()" class="btn btn-info">Enviar Tópico</button>
+            </form>
+
+            <!-- Agrega un label para mostrar mensajes de conexión y envío -->
+            <label id="mensajeLabel" class="mt-3"></label>
+        </div>
+    </div>
+
+    <h2 class="mt-5 mb-3 text-center">Visualización de Tópicos</h2>
+    <div id="mqttTopics" class="mb-5"></div>
+
+    <script>
+        var client; // Variable global para almacenar el cliente MQTT
+
+        function conectarAlBroker() {
+            var broker = document.getElementById("mqttBroker").value;
+            var port = document.getElementById("mqttPort").value;
+            var username = document.getElementById("mqttUsername").value;
+            var password = document.getElementById("mqttPassword").value;
+
+            var options = {
+                username: username,
+                password: password
+            };
+
+            client = mqtt.connect("wss://" + broker + ":" + port + "/mqtt", options);
+
+            function EventoConectar() {
+                console.log("Conectado a MQTT");
+                // Muestra el mensaje de conexión en el label
+                document.getElementById("mensajeLabel").innerText = "Conectado a MQTT";
+
+                // Suscribe al tópico cuando se conecta
+                var topic = document.getElementById("mqttTopic").value;
+                client.subscribe(topic);
+            }
+
+            function EventoMensaje(topic, message) {
+                console.log("Mensaje Recibido: " + message.toString());
+
+                // Mostrar el tópico en una card con paleta de colores azules
+                var mqttTopicsDiv = document.getElementById("mqttTopics");
+                mqttTopicsDiv.innerHTML += `
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <p><b>Tópico:</b> ${topic}</p>
+                            <p><b>Mensaje:</b> ${message.toString()}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            client.on("connect", EventoConectar);
+            client.on("message", EventoMensaje);
+
+            console.log("Conectando al Broker");
+        }
+
+        function enviarTópico() {
+            var topic = document.getElementById("mqttTopic").value;
+            var message = document.getElementById("mqttMessage").value;
+
+            // Publica el mensaje en el tópico
+            client.publish(topic, message);
+
+            console.log("Enviando mensaje al tópico: " + topic);
+
+            // Muestra el mensaje de envío en el label
+            document.getElementById("mensajeLabel").innerText = "Mensaje enviado al tópico: " + topic;
+        }
+    </script>
+</body>
+
+</html>
