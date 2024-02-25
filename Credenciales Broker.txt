@@ -1,0 +1,50 @@
+char ssid[] = "Teranet_Estrada";
+char pass[] = "1117508100Abc*";
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Broker EMQX
+
+Host: l1ea036e.ala.us-east-1.emqxsl.com
+MQTT over TLS/SSL Port:8883
+WebSocket over TLS/SSL Port:8084
+
+Login:
+https://accounts.emqx.com/signup
+
+Usuarios:
+User:Colmenas
+Pwd: 123456789
+
+User:VisorWEB
+Pwd: 123456789
+
+Tópico de Prueba:
+1117508100/7448C055B594/Datos
+
+Formato de Envio de Datos:
+{'Temperatura': 30, 'Humedad': 200, 'Peso': 150}
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Broker HiveMQ
+Host: 3fb2c2fed242415d88ab467b8ad1f686.s1.eu.hivemq.cloud
+username: Colmenas
+password: 123456789Ab
+
+Port
+8883
+Websocket Port
+8884
+
+Login:
+https://console.hivemq.cloud/?utm_source=mega+menu&utm_medium=cloud+icon
+Tópico de Prueba:
+1117508100/7448C055B594/Datos
+
+Formato de Envio de Datos:
+{'Temperatura': 30, 'Humedad': 200, 'Peso': 150}
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
