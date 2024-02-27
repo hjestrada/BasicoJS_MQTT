@@ -20,10 +20,10 @@ User:VisorWEB
 Pwd: 123456789
 
 Tópico de Prueba:
-1117508100/7448C055B594/Datos
+1117508100/7448C055B594
 
 Formato de Envio de Datos:
-{'Temperatura': 30, 'Humedad': 200, 'Peso': 150}
+{"temperature":200,"humidity":300,"weight":800}
 
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -41,10 +41,10 @@ Websocket Port
 Login:
 https://console.hivemq.cloud/?utm_source=mega+menu&utm_medium=cloud+icon
 Tópico de Prueba:
-1117508100/7448C055B594/Datos
+1117508100/7448C055B594
 
 Formato de Envio de Datos:
-{'Temperatura': 30, 'Humedad': 200, 'Peso': 150}
+{"temperature":200,"humidity":300,"weight":800}
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
