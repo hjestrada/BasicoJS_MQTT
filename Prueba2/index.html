@@ -4,57 +4,24 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HJESTRADA</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="./assets/img/bee.png" />
+
+    <title>Colmena</title>
+
     <!-- Agregando estilos de Bootstrap -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-    <style>
-        body {
-            background-color: #d4edda;
-            /* Tonalidad verde */
-            color: #586232;
-            /* Verde oscuro */
-        }
-        
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .card:hover:not(#receivedMessagesCard) {
-            transform: none;
-        }
-        
-        #receivedMessagesContainer {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        /* Estilos para la paleta de colores */
-        
-        .form-group label {
-            color: #586232;
-            /* Verde oscuro */
-        }
-        
-        .btn-primary {
-            background-color: #b0802e;
-            /* Marrón */
-            border-color: #b0802e;
-            /* Marrón */
-        }
-        
-        .btn-primary:hover {
-            background-color: #8d671f;
-            /* Marrón más oscuro al pasar el mouse */
-            border-color: #8d671f;
-            /* Marrón más oscuro al pasar el mouse */
-        }
-    </style>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row" id="mainRow">
+        <div class="col-md-6" id="configFormCol">
             <div class="card">
                 <div class="card-body">
                     <h2>Configuración MQTT</h2>
@@ -65,7 +32,8 @@
                         </div>
                         <div class="form-group">
                             <label for="connectUrl">URL de Conexión:</label>
-                            <input type="text" class="form-control" id="connectUrl" placeholder="l1ea036e.ala.us-east-1.emqxsl.com">
+                            <input type="text" class="form-control" id="connectUrl"
+                                placeholder="l1ea036e.ala.us-east-1.emqxsl.com">
                         </div>
                         <div class="form-group">
                             <label for="port">Puerto:</label>
@@ -83,13 +51,15 @@
                             <label for="topic">Tema:</label>
                             <input type="text" class="form-control" id="topic" placeholder="Ingrese el Tema MQTT">
                         </div>
+
                         <button type="button" class="btn btn-primary" onclick="connectMQTT()">Conectar</button>
                         <label id="connectionStatus"></label>
+
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" id="contentCol" style="display: none;">
             <div class="card" id="receivedMessagesCard">
                 <div class="card-body">
                     <div class="form-group">
@@ -100,125 +70,66 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h2>Mensajes Recibidos</h2>
-                    <div id="receivedMessagesContainer">
-                        <div id="receivedMessages"></div>
+
+            <!-- Card -->
+            <div class="col-md-12 mt-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="card-title">Colmena 1</h1>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="data-title">Temperatura</p>
+                                <p class="card-text large-font">
+                                    <span id="temp1">--</span> °C
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="data-title">Humedad</p>
+                                <p class="card-text large-font">
+                                    <span id="hum1">--</span>%
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="data-title">Peso</p>
+                                <p class="card-text large-font">
+                                    <span id="peso1">--</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Tabla de datos recibidos -->
+            <div class="col-md-12">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h2>Datos Recibidos</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Temperatura</th>
+                                    <th>Humedad</th>
+                                    <th>Peso</th>
+                                </tr>
+                            </thead>
+                            <tbody id="datosTablaBody">
+                                <!-- Aquí se mostrarán los datos recibidos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
         </div>
     </div>
 
-    <script>
-        let client; // Declarar la variable client aquí para que sea accesible en ambas funciones
-        let isConnected = false;
-
-        const connectMQTT = () => {
-            // Obtener los valores de los campos
-            const clientId = document.getElementById('clientId').value;
-            const connectUrl = document.getElementById('connectUrl').value;
-            const port = document.getElementById('port').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const topic = document.getElementById('topic').value;
-
-            // Validar que todos los campos obligatorios estén diligenciados
-            if (!clientId || !connectUrl || !port || !username || !password || !topic) {
-                alert('Por favor, complete todos los campos obligatorios.');
-                return;
-            }
-
-            // Asegurarse de que la URL comience con 'wss://'
-            let fullConnectUrl = connectUrl.startsWith('wss://') ? connectUrl : 'wss://' + connectUrl;
-
-            // Agregar el puerto a la URL
-            fullConnectUrl += `:${port}/mqtt`;
-
-            const options = {
-                keepalive: 30,
-                clientId: clientId,
-                clean: true,
-                connectTimeout: 5000,
-                username: username,
-                password: password,
-                reconnectPeriod: 1000,
-            };
-
-            console.log('Conectando al cliente MQTT');
-            client = mqtt.connect(fullConnectUrl, options);
-
-            client.on('error', (err) => {
-                console.log('Error de conexión: ', err);
-                client.end();
-                isConnected = false;
-                updateConnectionStatus();
-            });
-
-            client.on('reconnect', () => {
-                console.log('Reconectando...');
-            });
-
-            client.on('connect', () => {
-                console.log('Cliente conectado:' + clientId);
-                isConnected = true;
-                updateConnectionStatus();
-            });
-
-            client.on('message', (topic, payload) => {
-                console.log(
-                    'Mensaje Recibido: ' + payload.toString() + '\nEn el tema: ' + topic
-                );
-                mostrarMensajeRecibido(payload.toString());
-            });
-        };
-
-        const publishMessage = () => {
-            if (!isConnected) {
-                alert('No estás conectado al broker MQTT. Conéctate antes de publicar.');
-                return;
-            }
-
-            const topic = document.getElementById('topic').value;
-            const payload = document.getElementById('message').value;
-            const qos = 0;
-
-            client.subscribe(topic, {
-                qos
-            }, (error) => {
-                if (error) {
-                    console.log('Error de suscripción:', error);
-                    return;
-                }
-                console.log(`Suscrito al tema ${topic}`);
-            });
-
-            client.publish(topic, payload, {
-                qos
-            }, (error) => {
-                if (error) {
-                    console.error(error);
-                }
-            });
-        };
-
-        const mostrarMensajeRecibido = (mensaje) => {
-            const receivedMessagesDiv = document.getElementById('receivedMessages');
-            const container = document.getElementById('receivedMessagesContainer');
-
-            // Agrega el mensaje al contenedor sin afectar la tarjeta
-            receivedMessagesDiv.innerHTML += `<p>${mensaje}</p>`;
-
-            // Desplázate hacia abajo para mostrar los mensajes más recientes
-            container.scrollTop = container.scrollHeight;
-        };
-
-        const updateConnectionStatus = () => {
-            const connectionStatusLabel = document.getElementById('connectionStatus');
-            connectionStatusLabel.textContent = isConnected ? 'Conectado al Broker' : 'Desconectado del Broker';
-        };
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
