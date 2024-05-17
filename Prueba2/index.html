@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visor mqtt</title>
+    <title>Visor MQTT</title>
     <!-- Agregando estilos de Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- Agregando Font Awesome para los iconos -->
@@ -14,46 +14,63 @@
 </head>
 
 <body class="container mt-5">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <a class="navbar-brand" href="#">Visor MQTT</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Inicio <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Configuración</a>
+                </li>
+            
+            </ul>
+        </div>
+    </nav>
+    <!-- Fin del Navbar -->
 
-<!-- Tres tarjetas para mostrar la temperatura, la humedad y el peso -->
-<div class="row">
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fas fa-thermometer-half"></i> Temperatura
+    <!-- Tres tarjetas para mostrar la temperatura, la humedad y el peso -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">
+                    <i class="fas fa-thermometer-half"></i> Temperatura
+                </div>
+                <div class="card-body">
+                    <h5 id="tempVariable" class="card-title font-weight-bold text-danger"></h5>
+                    <p class="card-text">Última lectura</p>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 id="tempVariable" class="card-title"></h5>
-                <p class="card-text">Última lectura</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-tint"></i> Humedad
+                </div>
+                <div class="card-body">
+                    <h5 id="humVariable" class="card-title font-weight-bold text-primary"></h5>
+                    <p class="card-text">Última lectura</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <i class="fas fa-weight"></i> Peso
+                </div>
+                <div class="card-body">
+                    <h5 id="pesoVariable" class="card-title font-weight-bold text-success"></h5>
+                    <p class="card-text">Última lectura</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fas fa-tint"></i> Humedad
-            </div>
-            <div class="card-body">
-                <h5 id="humVariable" class="card-title"></h5>
-                <p class="card-text">Última lectura</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                <i class="fas fa-weight"></i> Peso
-            </div>
-            <div class="card-body">
-                <h5 id="pesoVariable" class="card-title"></h5>
-                <p class="card-text">Última lectura</p>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ------------------------------------------------------------------------------>
-
-
+    <!-- ------------------------------------------------------------------------------>
 
     <div class="row">
         <div class="col-md-6">
@@ -61,8 +78,7 @@
                 <div class="card-body">
                     <h2>Configuración MQTT</h2>
                     <form>
-
-                       <div class="form-group">
+                        <div class="form-group">
                             <label for="clientId">ID del Cliente:</label>
                             <input type="text" class="form-control" id="clientId" value="PruebaBasicaWEB">
                         </div>
@@ -83,7 +99,7 @@
                             <input type="password" class="form-control" id="password" value="123456789">
                         </div>
                         <div class="form-group">
-                            <label for="topic">Tema:</label>  
+                            <label for="topic">Tema:</label>
                             <input type="text" class="form-control" id="topic" value="1117508100/7448C055B594/Datos">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="connectMQTT()">Conectar</button>
@@ -113,9 +129,7 @@
             </div>
         </div>
     </div>
-    
-   
-    
+
     <script src="mqtt.min.js"></script>
     <script src="script.js"></script>
 </body>
