@@ -7,18 +7,62 @@
     <title>Visor mqtt</title>
     <!-- Agregando estilos de Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Agregando Font Awesome para los iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="container mt-5">
+
+<!-- Tres tarjetas para mostrar la temperatura, la humedad y el peso -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-thermometer-half"></i> Temperatura
+            </div>
+            <div class="card-body">
+                <h5 id="tempVariable" class="card-title"></h5>
+                <p class="card-text">Última lectura</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-tint"></i> Humedad
+            </div>
+            <div class="card-body">
+                <h5 id="humVariable" class="card-title"></h5>
+                <p class="card-text">Última lectura</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-weight"></i> Peso
+            </div>
+            <div class="card-body">
+                <h5 id="pesoVariable" class="card-title"></h5>
+                <p class="card-text">Última lectura</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------------------------------------------------------------>
+
+
+
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h2>Configuración MQTT</h2>
                     <form>
-                        <div class="form-group">
+
+                       <div class="form-group">
                             <label for="clientId">ID del Cliente:</label>
                             <input type="text" class="form-control" id="clientId" value="PruebaBasicaWEB">
                         </div>
@@ -69,7 +113,9 @@
             </div>
         </div>
     </div>
-
+    
+   
+    
     <script src="mqtt.min.js"></script>
     <script src="script.js"></script>
 </body>

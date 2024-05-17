@@ -93,8 +93,21 @@ const mostrarMensajeRecibido = (mensaje) => {
     const receivedMessagesDiv = document.getElementById('receivedMessages');
     const container = document.getElementById('receivedMessagesContainer');
 
+    // Analiza el mensaje como un objeto JSON
+    const datos = JSON.parse(mensaje);
+
+    // Asigna los valores de temperatura, humedad y peso a los elementos correspondientes en el DOM
+    document.getElementById('tempVariable').textContent = datos.temperature;
+    document.getElementById('humVariable').textContent = datos.humidity;
+    document.getElementById('pesoVariable').textContent = datos.weight;
+
+
     // Agrega el mensaje al contenedor sin afectar la tarjeta
     receivedMessagesDiv.innerHTML += `<p>${mensaje}</p>`;
+
+    // Desplázate hacia abajo para mostrar los mensajes más recientes
+    container.scrollTop = container.scrollHeight;
+
 
     // Desplázate hacia abajo para mostrar los mensajes más recientes
     container.scrollTop = container.scrollHeight;
