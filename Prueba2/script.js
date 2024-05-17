@@ -2,54 +2,105 @@ let client; // Declarar la variable client aquí para que sea accesible en ambas
 let isConnected = false;
 
 const connectMQTT = () => {
-    // Código de conexión MQTT omitido por brevedad...
+    // Obtener los valores de los campos
+    const clientId = document.getElementById('clientId').value;
+    const connectUrl = document.getElementById('connectUrl').value;
+    const port = document.getElementById('port').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const topic = document.getElementById('topic').value;
+
+    // Validar que todos los campos obligatorios estén diligenciados
+    if (!clientId || !connectUrl || !port || !username || !password || !topic) {
+        alert('Por favor, complete todos los campos obligatorios.');
+        return;
+    }
+
+    // Asegurarse de que la URL comience con 'wss://'
+    let fullConnectUrl = connectUrl.startsWith('wss://') ? connectUrl : 'wss://' + connectUrl;
+
+    // Agregar el puerto a la URL
+    fullConnectUrl += `:${port}/mqtt`;
+
+    const options = {
+        keepalive: 30,
+        clientId: clientId,
+        clean: true,
+        connectTimeout: 5000,
+        username: username,
+        password: password,
+        reconnectPeriod: 1000,
+    };
+
+    console.log('Conectando al cliente MQTT');
+    client = mqtt.connect(fullConnectUrl, options);
+
+    client.on('error', (err) => {
+        console.log('Error de conexión: ', err);
+        client.end();
+        isConnected = false;
+        updateConnectionStatus();
+    });
+
+    client.on('reconnect', () => {
+        console.log('Reconectando...');
+    });
+
+    client.on('connect', () => {
+        console.log('Cliente conectado:' + clientId);
+        isConnected = true;
+        updateConnectionStatus();
+    });
+
+    client.on('message', (topic, payload) => {
+        console.log(
+            'Mensaje Recibido: ' + payload.toString() + '\nEn el tema: ' + topic
+        );
+        mostrarMensajeRecibido(payload.toString());
+    });
 };
 
 const publishMessage = () => {
-    // Código de publicación de mensaje MQTT omitido por brevedad...
+    if (!isConnected) {
+        alert('No estás conectado al broker MQTT. Conéctate antes de publicar.');
+        return;
+    }
+
+    const topic = document.getElementById('topic').value;
+    const payload = document.getElementById('message').value;
+    const qos = 0;
+
+    client.subscribe(topic, {
+        qos
+    }, (error) => {
+        if (error) {
+            console.log('Error de suscripción:', error);
+            return;
+        }
+        console.log(`Suscrito al tema ${topic}`);
+    });
+
+    client.publish(topic, payload, {
+        qos
+    }, (error) => {
+        if (error) {
+            console.error(error);
+        }
+    });
 };
 
-const updateCardData = (topic, message) => {
-    switch (topic) {
-        case 'temperatura':
-            document.getElementById('temperatura').textContent = message + ' °C';
-            break;
-        case 'humedad':
-            document.getElementById('humedad').textContent = message + ' %';
-            break;
-        case 'peso':
-            document.getElementById('peso').textContent = message + ' kg';
-            break;
-        default:
-            break;
-    }
+const mostrarMensajeRecibido = (mensaje) => {
+    const receivedMessagesDiv = document.getElementById('receivedMessages');
+    const container = document.getElementById('receivedMessagesContainer');
+
+    // Agrega el mensaje al contenedor sin afectar la tarjeta
+    receivedMessagesDiv.innerHTML += `<p>${mensaje}</p>`;
+
+    // Desplázate hacia abajo para mostrar los mensajes más recientes
+    container.scrollTop = container.scrollHeight;
 };
 
 const updateConnectionStatus = () => {
-    // Código de actualización del estado de conexión omitido por brevedad...
+    const connectionStatusLabel = document.getElementById('connectionStatus');
+    connectionStatusLabel.textContent = isConnected ? 'Conectado al Broker' : 'Desconectado del Broker';
 };
-
-// Subscribirse a los temas relevantes
-const subscribeTopics = () => {
-    client.subscribe('temperatura', (error) => {
-        if (error) {
-            console.log('Error de suscripción a temperatura:', error);
-        }
-    });
-    client.subscribe('humedad', (error) => {
-        if (error) {
-            console.log('Error de suscripción a humedad:', error);
-        }
-    });
-    client.subscribe('peso', (error) => {
-        if (error) {
-            console.log('Error de suscripción a peso:', error);
-        }
-    });
-};
-
-// Manejar los mensajes recibidos
-client.on('message', (topic, payload) => {
-    console.log('Mensaje Recibido:', topic, payload.toString());
-    updateCardData(topic, payload.toString());
-});

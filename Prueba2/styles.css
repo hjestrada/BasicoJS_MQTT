@@ -1,23 +1,32 @@
 body {
-    background: linear-gradient(to bottom right, #85c1e9, #d6eaf8);
-    /* Fondo degradado en tonos azules */
-    color: #333;
-    /* Texto oscuro */
+    background-color: #d4edda;
+    color: #586232;
 }
 
 .card {
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #f8f9fa;
-    /* Fondo blanco */
-    margin-bottom: 20px;
 }
 
-.card-body {
-    text-align: center;
+.card:hover:not(#receivedMessagesCard) {
+    transform: none;
 }
 
-h2 {
-    color: #2980b9;
-    /* Azul */
+#receivedMessagesContainer {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.form-group label {
+    color: #586232;
+}
+
+.btn-primary {
+    background-color: #b0802e;
+    border-color: #b0802e;
+}
+
+.btn-primary:hover {
+    background-color: #8d671f;
+    border-color: #8d671f;
 }
