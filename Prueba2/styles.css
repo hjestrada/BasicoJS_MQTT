@@ -1,0 +1,23 @@
+body {
+    background: linear-gradient(to bottom right, #85c1e9, #d6eaf8);
+    /* Fondo degradado en tonos azules */
+    color: #333;
+    /* Texto oscuro */
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+    /* Fondo blanco */
+    margin-bottom: 20px;
+}
+
+.card-body {
+    text-align: center;
+}
+
+h2 {
+    color: #2980b9;
+    /* Azul */
+}
